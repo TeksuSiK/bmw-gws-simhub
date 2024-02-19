@@ -11,11 +11,6 @@ uint8_t updateFrame[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
 uint8_t counter = 0;
 
-int signum(int val)
-{
-    return (0 < val) - (val < 0);
-}
-
 void sendGear()
 {
     updateFrame[1] = counter;
@@ -32,8 +27,12 @@ void sendGear()
     {
         updateFrame[2] = 0x81;
     }
+    else if (g_gws_gear == 2)
+    {
+        updateFrame[2] = 0x80;
+    }
 
-    if (signum(g_gws_gear) != signum(g_game_gear))
+    if (g_gws_gear != signum(g_game_gear))
     {
         updateFrame[2] = updateFrame[2] | 0x08;
     }

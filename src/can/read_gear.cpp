@@ -19,14 +19,14 @@ void readGear()
             {
                 if (currentPosition == 0x7E && rxBuf[2] == 0x0E)
                 {
+                    g_attempts_count = 0;
                     g_gws_shifter_manual = 0;
-                    Serial.println("Engaged drive from M/S");
                 }
 
                 if (currentPosition == 0x0E && rxBuf[2] == 0x7E)
                 {
+                    g_attempts_count = 0;
                     g_gws_shifter_manual = 1;
-                    Serial.println("Engaged M/S");
                 }
 
                 if (rxBuf[2] != currentPosition && rxBuf[2] != 0x0E && rxBuf[2] != 0x7E)
@@ -37,14 +37,14 @@ void readGear()
                         case 0x2E:
                             if (g_gws_gear == 0)
                             {
+                                g_attempts_count = 0;
                                 g_gws_gear = -1;
-                                Serial.println("Engaged reverse");
                             }
 
                             if (g_gws_gear == 1)
                             {
+                                g_attempts_count = 0;
                                 g_gws_gear = 0;
-                                Serial.println("Engaged neutral");
                             }
 
                             break;
@@ -52,26 +52,34 @@ void readGear()
                         case 0x4E:
                             if (g_gws_gear == 0)
                             {
+                                g_attempts_count = 0;
                                 g_gws_gear = 1;
-                                Serial.println("Engaged drive");
                             }
 
                             if (g_gws_gear == -1)
                             {
+                                g_attempts_count = 0;
                                 g_gws_gear = 0;
-                                Serial.println("Engaged neutral");
                             }
                             
                             break;
                         case 0x5E:
-                            Serial.println("Downshift");
+                            joystick.pressButton(4);
+                            joystick.releaseButton(4);
                             break;
                         case 0x6E:
-                            Serial.println("Upshift");
+                            joystick.pressButton(5);
+                            joystick.releaseButton(5);
                             break;
                         default:
                             break;
                     }
+                }
+
+                if ((rxBuf[3] == 0xD5) && (g_gws_gear != 0))
+                {
+                    g_attempts_count = 0;
+                    g_gws_gear = 0;
                 }
 
                 currentPosition = rxBuf[2];
