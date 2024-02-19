@@ -1,18 +1,25 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include <configuration.h>
+#include <globals.h>
+#include <canbus.h>
+#include <serial.h>
+
+MCP_CAN CAN(SPI_CS_PIN);
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(SERIAL_BAUD_RATE);
+
+    if (CAN.begin(MCP_ANY, CAN_500KBPS, CAN_CLOCK) == CAN_OK)
+    {
+        Serial.println("MCP2515 Initialized successfully");
+    }
+
+    CAN.setMode(MCP_NORMAL);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    sendCanBus();
+    readCanBus();
+    readSerial();
 }
