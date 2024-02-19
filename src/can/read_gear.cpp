@@ -41,7 +41,7 @@ void readGear()
                                 g_gws_gear = -1;
                             }
 
-                            if (g_gws_gear == 1)
+                            if (signum(g_gws_gear) == 1)
                             {
                                 g_attempts_count = 0;
                                 g_gws_gear = 0;

@@ -32,7 +32,7 @@ void sendGear()
         updateFrame[2] = 0x80;
     }
 
-    if (g_gws_gear != signum(g_game_gear))
+    if (signum(g_gws_gear) != signum(g_game_gear))
     {
         updateFrame[2] = updateFrame[2] | 0x08;
     }

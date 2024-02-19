@@ -1,3 +1,4 @@
+#include <configuration.h>
 #include <globals.h>
 #include <Joystick.h>
 
@@ -7,12 +8,15 @@ void sendJoystick()
 {
     uint32_t current = millis();
 
-    if ((g_gws_gear == 1) && (signum(g_game_gear) == 1) && ((g_gws_shifter_manual && !g_game_shifter_manual) || (!g_gws_shifter_manual && g_game_shifter_manual)))
+    if (((g_gws_shifter_manual && !g_game_shifter_manual) || (!g_gws_shifter_manual && g_game_shifter_manual)))
     {
         if (g_attempts_count == 3)
         {
-            g_gws_gear = 2;
-            g_attempts_count = 0;
+            if (!CONFIGURATION_MODE)
+            {
+                g_gws_gear = 2;
+                g_attempts_count = 0;
+            }
         }
         else
         {
@@ -27,7 +31,7 @@ void sendJoystick()
         }
     }
 
-    if (g_gws_gear != signum(g_game_gear))
+    if (signum(g_gws_gear) != signum(g_game_gear))
     {
         if (g_attempts_count == 3)
         {
@@ -40,15 +44,9 @@ void sendJoystick()
             {
                 uint8_t gearToEngage = g_gws_gear + 1;
 
-                for (int i = 0; i <= 2; i++)
-                {
-                    if (i == gearToEngage)
-                    {
-                        continue;
-                    }
-
-                    joystick.releaseButton(i);
-                }
+                joystick.releaseButton(0);
+                joystick.releaseButton(1);
+                joystick.releaseButton(2);
 
                 if (gearToEngage == 1)
                 {
